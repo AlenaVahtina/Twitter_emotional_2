@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="themes/Twitter.min.css" />
+<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+
+<script type='text/javascript'>
+$(document).ready(function() {
+    $.ajaxSetup({
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+
+    window.globalVar = 0;//[[to save id]]
+
+
+    $("#ok").click(function(){
+      var flickerAPI = "http://192.168.1.5:5000/radiobutton";
+      var t = $("input:radio[name ='emotional']:checked").val();
+      if(globalVar != 0)
+      jQuery.ajax({
+          url: flickerAPI,
+          data:  JSON.stringify({message_id: globalVar, emo_color : t.slice(0,1) , inf_color : t.slice(1,2) }),
+          cache: false,
+          contentType: false,
+          crossDomain: true,
+          processData: false,
+          type: 'POST',
+          success: function(data){
+		globalVar = 0;
+		$("#skip").click();
+          }
+      });
+
+    });
+
+
+    $("#add").click(function(){
+      var flickerAPI = "http://192.168.1.5:5000/selectmenu";
+      if(globalVar != 0)
+      jQuery.ajax({
+          url: flickerAPI,
+          data:  JSON.stringify({message_id: globalVar, object_or_sentiment : $('#object_or_sentiment').val() , emotional_color :  $('#emotional_color').val() , lable_object_or_sentiment : $('#lable_object_or_sentiment').val() }),
+          cache: false,
+          contentType: false,
+          crossDomain: true,
+          processData: false,
+          type: 'POST',
+          success: function(data){
+            $('#lable_object_or_sentiment').val('');
+          }
+      });
+
+    });
+    $("#skip").click(function(){
+      var flickerAPI = "http://192.168.1.5:5000/getmessage";
+      jQuery.ajax({
+          url: flickerAPI,
+          cache: false,
+          contentType: false,
+          crossDomain: true,
+          processData: false,
+          type: 'GET',
+          success: function(data){              
+              $('#text').text("");
+	      globalVar = 0;
+	      if(data === "")
+		alert("No more messages for you");
+	      else{
+              	obj=jQuery.parseJSON(data);
+	      
+              	$('#text').text(obj.message_text);
+              	globalVar = obj.message_id;
+		}
+          }
+      });
+    });
+    $("#skip").click();
+});
+</script>
+
+
+</head>
+<body>
+
+
+<style>
+   p {
+    border: 1px solid blue;
+    padding: 10px;
+    width: 300px; 
+    height: 150px;
+   }
+</style>
+
+<div data-role="page" id="pageone">
+
+  <div data-role="main" class="ui-content">
+    <a href="#pagetwo" data-transition="pop">5 эмоций</a>
+  </div>
+<a href="form.html">Выход</a>
+<img src="twitter_icon.png" alt="Mountain View" width="150" height="100">
+
+
+ <p><label type="text" id="text" name="m_text">
+ </label></p>
+
+<left>
+<table>
+  <tr>
+    <td></td>
+    <td></td>
+
+  </tr>
+</table>
+</left>
+
+
+    <fieldset data-role="controlgroup">
+        <legend>Эмоции:</legend>
+        <input type="radio" name="emotional" id="positive" value="11">
+        <label for="positive">Позитивный</label>
+        <input type="radio" name="emotional" id="neutral" value="21">
+        <label for="neutral">Нейтральный</label>
+        <input type="radio" name="emotional" id="negative" value="31">
+        <label for="negative">Негативный</label>
+        <input type="radio" name="emotional" id="uninformative" value="00" checked="true">
+        <label for="uninformative">Малоинформотивный</label>
+    </fieldset>
+
+
+
+<br>
+<br>
+
+<tr>
+<td>Дополнительные функции:</td>
+<input  id="lable_object_or_sentiment"/> 
+   
+<select id="object_or_sentiment">
+  <option value="object">Объект</option>
+  <option value="sentiment">Сентимент</option>
+</select>
+       
+<select id="emotional_color">
+  <option  value="1">Позитивный</option>
+  <option  value="2">Нейтральный</option>
+  <option  value="3">Негативный</option>
+</select>
+
+<button id="add">Добавить</button>
+<button id="ok">Следующее сообщение</button>
+<button id="skip">Пропустить</button>
+
+<div data-role="page" id="pagetwo">
+
+  <div data-role="main" class="ui-content">
+    <a href="#pageone">3 эмоции</a>
+  </div>
+
+</div>
+
+</body>
+</html>

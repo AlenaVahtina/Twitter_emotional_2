@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script type='text/javascript'
+  src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+<script type='text/javascript'
+  src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet" type="text/css"
+  href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script type="text/javascript" src="jquery.cookie.js"></script>
+<script type='text/javascript'>//<![CDATA[ 
+$(document).ready(function() {<!--from   www.ja  v a 2 s.  c  o  m-->
+    $.ajaxSetup({
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+
+    $("#submit").click(function(){
+    	var flickerAPI = "http://127.0.0.1:5000/login";
+      jQuery.ajax({
+          url: flickerAPI,
+          data:  JSON.stringify({login: $('#userName').val(), password: $('#password').val() , test :  $.cookie("test") }),
+          cache: false,
+          contentType: false,
+          crossDomain: true,
+          processData: false,
+          type: 'POST',
+          success: function(data){
+              // alert(data);
+              obj=jQuery.parseJSON(data);
+              if (obj.logged != 0) 
+              {
+                $.cookie("user_id", obj.logged);
+                //document.cookie = $.cookie("user_id", obj.logged);
+                window.location.href = "main.html";
+              }
+              else
+              {
+                alert("Неверный логин или пароль!")
+              }
+          }
+      });
+
+    });
+});
+//]]>  
+</script>
+
+
+<style>
+#center {
+  top: 50%; /* Отступ в процентах от верхнего края окна */
+  left: 50%; /* Отступ в процентах от левого края окна */
+  width: 450px; /* Ширина блока */
+  height: 450px; /* Высота блока */
+  position: absolute; /* Абсолютное позиционирование блока */
+  margin-top: -225px; /* Отрицательный отступ от верхнего края страницы, должен равняться половине высоты блока со знаком минус */
+  margin-left: -225px; /* Отрицательный отступ от левого края страницы, должен равняться половине высоты блока со знаком минус */
+}
+</style>
+
+
+</head>
+<body>
+  <div data-role="page" id="callAjaxPage">
+    <div data-role="main" class="ui-content" id="center">
+        <div data-role="fieldcontain">
+          <label for="userName">Логин</label> 
+          <input type="text" name="userName" id="userName" value="" /> 
+          <label for="password">Пароль</label>
+          <input type="text" name="password" id="password" value="" />
+          <div align="right"><button id="submit" class="ui-btn">Вход</button></div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
+
