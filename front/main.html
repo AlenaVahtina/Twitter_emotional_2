@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="jquery.cookie.js"></script>
 
 
 <script type='text/javascript'>
@@ -22,7 +23,9 @@ $(document).ready(function() {
 
 
     $("#ok").click(function(){
-      var flickerAPI = "http://192.168.1.5:5000/radiobutton";
+          	var parser = document.createElement('a');
+        parser.href = window.location.href; 
+        var flickerAPI = parser.origin + ":5000/radiobutton";
       var t = $("input:radio[name ='emotional']:checked").val();
       if(globalVar != 0)
       jQuery.ajax({
@@ -43,7 +46,9 @@ $(document).ready(function() {
 
 
     $("#add").click(function(){
-      var flickerAPI = "http://192.168.1.5:5000/selectmenu";
+          	var parser = document.createElement('a');
+        parser.href = window.location.href; 
+        var flickerAPI = parser.origin + ":5000/selectmenu";
       if(globalVar != 0)
       jQuery.ajax({
           url: flickerAPI,
@@ -55,12 +60,55 @@ $(document).ready(function() {
           type: 'POST',
           success: function(data){
             $('#lable_object_or_sentiment').val('');
+            fillTable();
           }
       });
 
     });
+    
+    function fillTable(){
+            	var parser = document.createElement('a');
+        parser.href = window.location.href; 
+        var flickerAPI = parser.origin + ":5000/getoos";
+        jQuery.ajax({
+          url: flickerAPI,
+          data:  JSON.stringify({message_id: globalVar}), 
+          cache: false,
+          contentType: false,
+          crossDomain: true,
+          processData: false,
+          type: 'POST',
+          success: function(data){              
+              obj=jQuery.parseJSON(data);
+              $('#oos1').text(obj.oos1);
+              if (obj.oos1mark=='1'){
+                $('#oos1mark').text("Позитивный");}
+              else if (obj.oos1mark=='2'){
+                $('#oos1mark').text("Нейтральный");}
+              else if (obj.oos1mark=='3'){
+                $('#oos1mark').text("Негативный");}
+              $('#oos2').text(obj.oos2);
+              if (obj.oos2mark=='1'){
+                $('#oos2mark').text("Позитивный");}
+              else if (obj.oos1mark=='2'){
+                $('#oos2mark').text("Нейтральный");}
+              else if (obj.oos1mark=='3'){
+                $('#oos2mark').text("Негативный");}
+              $('#oos3').text(obj.oos3);
+              if (obj.oos3mark=='1'){
+                $('#oos3mark').text("Позитивный");}
+              else if (obj.oos1mark=='2'){
+                $('#oos3mark').text("Нейтральный");}
+              else if (obj.oos1mark=='3'){
+                $('#oos3mark').text("Негативный");}
+          }
+        });
+    }
+
     $("#skip").click(function(){
-      var flickerAPI = "http://192.168.1.5:5000/getmessage";
+          	var parser = document.createElement('a');
+        parser.href = window.location.href; 
+        var flickerAPI = parser.origin + ":5000/getmessage";
       jQuery.ajax({
           url: flickerAPI,
           cache: false,
@@ -69,23 +117,33 @@ $(document).ready(function() {
           processData: false,
           type: 'GET',
           success: function(data){              
-              $('#text').text("");
-	      globalVar = 0;
-	      if(data === "")
-		alert("No more messages for you");
-	      else{
+                      $('#text').text("");
+        	      globalVar = 0;
+        	      if(data === "")
+        		alert("No more messages for you");
+        	      else{
               	obj=jQuery.parseJSON(data);
 	      
               	$('#text').text(obj.message_text);
               	globalVar = obj.message_id;
+                fillTable();
 		}
           }
       });
     });
+    
+
     $("#skip").click();
+
+
+    $("#exit").click(function(){
+      $.cookie("user_id", "");
+      window.location.href = "form.html";
+              });
+
+
 });
 </script>
-
 
 </head>
 <body>
@@ -98,6 +156,12 @@ $(document).ready(function() {
     width: 300px; 
     height: 150px;
    }
+
+   table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-left: 20%;
+  }
 </style>
 
 <div data-role="page" id="pageone">
@@ -105,7 +169,8 @@ $(document).ready(function() {
   <div data-role="main" class="ui-content">
     <a href="#pagetwo" data-transition="pop">5 эмоций</a>
   </div>
-<a href="form.html">Выход</a>
+<button id="exit">Выход</button>
+
 <img src="twitter_icon.png" alt="Mountain View" width="150" height="100">
 
 
@@ -115,10 +180,25 @@ $(document).ready(function() {
 <left>
 <table>
   <tr>
-    <td></td>
-    <td></td>
-
+    <td>Объект/сентимент</td>
+    <td>Оценка</td>
   </tr>
+
+  <tr>
+    <td><label id="oos1"></label></td>
+    <td><label id="oos1mark"></label></td>
+  </tr>
+
+  <tr>
+    <td><label id="oos2"></label></td>
+    <td><label id="oos2mark"></label></td>
+  </tr>
+
+  <tr>
+    <td><label id="oos3"></label></td>
+    <td><label id="oos3mark"></label></td>
+  </tr>
+
 </table>
 </left>
 

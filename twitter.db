@@ -1,0 +1,353 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: apprisal; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE apprisal (
+    id integer NOT NULL,
+    id_user integer NOT NULL,
+    id_message integer NOT NULL,
+    emotional_color integer,
+    inf_color integer
+);
+
+
+ALTER TABLE public.apprisal OWNER TO postgres;
+
+--
+-- Name: apprisal_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE apprisal_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.apprisal_id_seq OWNER TO postgres;
+
+--
+-- Name: apprisal_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE apprisal_id_seq OWNED BY apprisal.id;
+
+
+--
+-- Name: emotional_flag; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE emotional_flag (
+    id integer NOT NULL,
+    id_message integer NOT NULL,
+    object_or_sentiment text,
+    emotional_color integer,
+    word text
+);
+
+
+ALTER TABLE public.emotional_flag OWNER TO postgres;
+
+--
+-- Name: emotional_flag_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE emotional_flag_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.emotional_flag_id_seq OWNER TO postgres;
+
+--
+-- Name: emotional_flag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE emotional_flag_id_seq OWNED BY emotional_flag.id;
+
+
+--
+-- Name: message; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE message (
+    id integer NOT NULL,
+    m_text text NOT NULL
+);
+
+
+ALTER TABLE public.message OWNER TO postgres;
+
+--
+-- Name: message_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE message_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.message_id_seq OWNER TO postgres;
+
+--
+-- Name: message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE message_id_seq OWNED BY message.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    login text NOT NULL,
+    pasword text NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY apprisal ALTER COLUMN id SET DEFAULT nextval('apprisal_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY emotional_flag ALTER COLUMN id SET DEFAULT nextval('emotional_flag_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY message ALTER COLUMN id SET DEFAULT nextval('message_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: apprisal; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY apprisal (id, id_user, id_message, emotional_color, inf_color) FROM stdin;
+9	1	1	0	0
+10	1	2	0	0
+11	1	3	3	1
+12	1	6	0	0
+13	1	4	0	0
+14	1	8	0	0
+15	1	7	0	0
+16	1	5	0	0
+\.
+
+
+--
+-- Name: apprisal_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('apprisal_id_seq', 16, true);
+
+
+--
+-- Data for Name: emotional_flag; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY emotional_flag (id, id_message, object_or_sentiment, emotional_color, word) FROM stdin;
+8	1	object	1	
+9	1	object	1	
+10	1	object	1	
+11	1	sentiment	2	hui
+12	1	object	1	
+13	1	object	1	
+14	1	object	1	
+15	8	object	2	word
+16	8	object	2	word
+17	5	object	1	know
+18	6	object	2	
+19	4	object	1	
+\.
+
+
+--
+-- Name: emotional_flag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('emotional_flag_id_seq', 19, true);
+
+
+--
+-- Data for Name: message; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY message (id, m_text) FROM stdin;
+1	Hi,Neo!
+2	One, two, three
+3	No one could help!
+4	One moment!
+5	Now I know
+6	La-la-lend
+7	Stronger
+8	Some word
+9	 Are you sure this is a cross-browser compatible solution?
+10	 Warning: it will return http: even if you pass just 
+11	hostname -- Host name specifies the host that owns the resource. For example, www.stackoverflow.com. A server provides services using the name of the host. 
+\.
+
+
+--
+-- Name: message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('message_id_seq', 1, false);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (id, login, pasword) FROM stdin;
+1	alena	123
+2	user2	12345
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('users_id_seq', 1, true);
+
+
+--
+-- Name: emotional_flag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY emotional_flag
+    ADD CONSTRAINT emotional_flag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: message_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY message
+    ADD CONSTRAINT message_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: apprisal_id_message_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY apprisal
+    ADD CONSTRAINT apprisal_id_message_fkey FOREIGN KEY (id_message) REFERENCES message(id);
+
+
+--
+-- Name: apprisal_id_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY apprisal
+    ADD CONSTRAINT apprisal_id_user_fkey FOREIGN KEY (id_user) REFERENCES users(id);
+
+
+--
+-- Name: emotional_flag_id_message_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY emotional_flag
+    ADD CONSTRAINT emotional_flag_id_message_fkey FOREIGN KEY (id_message) REFERENCES message(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

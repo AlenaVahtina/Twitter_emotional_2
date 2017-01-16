@@ -62,22 +62,30 @@ def getmessage():
 #get object_or_sentiment from db to table
 @app.route("/getoos", methods=['GET', 'POST', 'OPTIONS'])
 def setmessage():
-    message_id = request.cookies.get('id_message')
-    results = dbthing('SELECT word FROM emotional_flag WHERE id_message='+message_id+' LIMIT 3')
+    message_id = json.loads(request.get_data())
+    results = dbthing('SELECT word, emotional_color FROM emotional_flag WHERE id_message='+message_id['message_id']+' LIMIT 3')
     oos="{ "
-    if (0<len(result)) :
+    oosmark="{ "
+    if (0<len(results)) :
         oos+="\"oos1\" : \""+results[0][0]+"\" , "
+        oosmark+="\"oos1mark\" : \""+str(results[0][1])+"\" , "
     else:
         oos+="\"oos1\" : \"\" , "
-    if (1<len(result)) :
+        oosmark+="\"oos1mark\" : \"\" , "
+    if (1<len(results)) :
         oos+="\"oos2\" : \""+results[1][0]+"\" , "
+        oosmark+="\"oos2mark\" : \""+str(results[1][1])+"\" , "
     else:
         oos+="\"oos2\" : \"\" , "
-    if (2<len(result)) :
+        oosmark+="\"oos2mark\" : \"\" , "
+    if (2<len(results)) :
         oos+="\"oos3\" : \""+results[2][0]+"\""
+        oosmark+="\"oos3mark\" : \""+str(results[2][1])+"\" , "
     else:
         oos+="\"oos3\" : \"\""
+        oosmark+="\"oos3mark\" : \"\" , "
     oos+="}"
+    oosmark+="}"
 
 
     return oos
